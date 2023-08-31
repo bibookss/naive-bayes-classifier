@@ -8,14 +8,14 @@ from nltk.metrics.distance import jaccard_distance
 from nltk.util import ngrams
 
 class NaiveBayesSpamClassifier:
-    def __init__(self):
+    def __init__(self, smoothing=1):
         download('stopwords', quiet=True)
         download('punkt', quiet=True)
         download('wordnet', quiet=True)
         download('averaged_perceptron_tagger', quiet=True)
         download('words', quiet=True)
 
-        self.smoothing = 1
+        self.smoothing = smoothing
         self.vocab = {}
         self.prior = {}
         self.likelihood = {}
@@ -75,15 +75,15 @@ class NaiveBayesSpamClassifier:
         # Calculate likelihood
         self.likelihood['spam'] = {}
         for word in self.vocab['spam']:
-            self.likelihood['spam'][word] =  (self.vocab['spam'][word] + 1) / (spam_words + self.smoothing * spam_unique_words)
+            self.likelihood['spam'][word] =  (self.vocab['spam'][word] + self.smoothing) / (spam_words + self.smoothing * spam_unique_words)
         # Add one entry for unknown word
-        self.likelihood['spam']['UNKOWN_WORD'] = 1 / (spam_words + self.smoothing * spam_unique_words)
+        self.likelihood['spam']['UNKOWN_WORD'] = self.smoothing / (spam_words + self.smoothing * spam_unique_words)
 
         self.likelihood['ham'] = {}
         for word in self.vocab['ham']:
             self.likelihood['ham'][word] =  self.vocab['ham'][word] / (ham_words + self.smoothing * spam_unique_words)
         # Add one entry for unknown word
-        self.likelihood['ham']['UNKOWN_WORD'] = 1 / (ham_words + self.smoothing * spam_unique_words)
+        self.likelihood['ham']['UNKOWN_WORD'] = self.smoothing / (ham_words + self.smoothing * spam_unique_words)
 
         # Compute marginal probability
         self.marginal = {}
@@ -98,7 +98,7 @@ class NaiveBayesSpamClassifier:
             self.marginal[word] = self.marginal[word] / (total_words + self.smoothing * (spam_unique_words + ham_unique_words))
 
         # Add one entry for unknown word
-        self.marginal['UNKOWN_WORD'] = 1 / (total_words + self.smoothing * (spam_unique_words + ham_unique_words))
+        self.marginal['UNKOWN_WORD'] = self.smoothing / (total_words + self.smoothing * (spam_unique_words + ham_unique_words))
 
     def predict(self, X):
         X = self.preprocess(X)
