@@ -20,6 +20,6 @@ if __name__ == '__main__':
     y_pred = model.predict(X_test)
 
     # Attach prediction to test data
-    test_df['label'] = y_pred
+    test_df.insert(0, 'label', y_pred)
     test_df.to_csv('dataset/PerezResultData.csv', index=False)
     print('Prediction saved to PerezResultData.csv')
