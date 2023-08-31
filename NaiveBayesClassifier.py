@@ -9,11 +9,11 @@ from nltk.util import ngrams
 
 class NaiveBayesSpamClassifier:
     def __init__(self):
-        download('stopwords')
-        download('punkt')
-        download('wordnet')
-        download('averaged_perceptron_tagger')
-        download('words')
+        download('stopwords', quiet=True)
+        download('punkt', quiet=True)
+        download('wordnet', quiet=True)
+        download('averaged_perceptron_tagger', quiet=True)
+        download('words', quiet=True)
 
         self.smoothing = 1
         self.vocab = {}
