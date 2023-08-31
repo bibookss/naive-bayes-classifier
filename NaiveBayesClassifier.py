@@ -4,8 +4,6 @@ from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords, wordnet, words
 from nltk import pos_tag, download
 from collections import Counter
-from nltk.metrics.distance import jaccard_distance
-from nltk.util import ngrams
 
 class NaiveBayesSpamClassifier:
     def __init__(self, smoothing=1):
@@ -75,15 +73,15 @@ class NaiveBayesSpamClassifier:
         # Calculate likelihood
         self.likelihood['spam'] = {}
         for word in self.vocab['spam']:
-            self.likelihood['spam'][word] =  (self.vocab['spam'][word] + self.smoothing) / (spam_words + self.smoothing * spam_unique_words)
+            self.likelihood['spam'][word] =  (self.vocab['spam'][word] + self.smoothing) / (spam_words + self.smoothing * spam_unique_words + self.smoothing)
         # Add one entry for unknown word
-        self.likelihood['spam']['UNKOWN_WORD'] = self.smoothing / (spam_words + self.smoothing * spam_unique_words)
+        self.likelihood['spam']['UNKOWN_WORD'] = self.smoothing / (self.smoothing + spam_words + self.smoothing * spam_unique_words)
 
         self.likelihood['ham'] = {}
         for word in self.vocab['ham']:
-            self.likelihood['ham'][word] =  self.vocab['ham'][word] / (ham_words + self.smoothing * spam_unique_words)
+            self.likelihood['ham'][word] =  self.vocab['ham'][word] / (ham_words + self.smoothing * spam_unique_words + self.smoothing)
         # Add one entry for unknown word
-        self.likelihood['ham']['UNKOWN_WORD'] = self.smoothing / (ham_words + self.smoothing * spam_unique_words)
+        self.likelihood['ham']['UNKOWN_WORD'] = self.smoothing / (self.smoothing + ham_words + self.smoothing * spam_unique_words)
 
         # Compute marginal probability
         self.marginal = {}
