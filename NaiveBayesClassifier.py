@@ -55,22 +55,22 @@ class NaiveBayesSpamClassifier:
                     word_counter.update(X[i])
             self.vocab[_class] = word_counter
 
-            print('After preprocessing, class {} has {} unique words with {} total words'.format(_class, len(word_counter), sum(word_counter.values())))
-            print('10 most common words: {}'.format(word_counter.most_common(10)))
+            # print('After preprocessing, class {} has {} unique words with {} total words'.format(_class, len(word_counter), sum(word_counter.values())))
+            # print('10 most common words: {}'.format(word_counter.most_common(10)))
 
         # Calculate total words
         spam_words = sum(self.vocab['spam'].values())
         spam_unique_words = len(self.vocab['spam'])
         ham_words = sum(self.vocab['ham'].values())
         ham_unique_words = len(self.vocab['ham'])
-        total_words = spam_words + ham_words # + self.smoothing * (spam_unique_words + ham_unique_words)
-        print('Total words in spam and ham is {}'.format(total_words))
+        total_words = spam_words + ham_words 
+        # print('Total words in spam and ham is {}'.format(total_words))
 
         # Calculate prior
         self.prior['spam'] = spam_words / total_words
         self.prior['ham'] = ham_words / total_words
-        print('Prior for spam is {}'.format(self.prior['spam']))
-        print('Prior for ham is {}'.format(self.prior['ham']))
+        # print('Prior for spam is {}'.format(self.prior['spam']))
+        # print('Prior for ham is {}'.format(self.prior['ham']))
 
         # Calculate likelihood
         self.likelihood['spam'] = {}
@@ -118,12 +118,9 @@ class NaiveBayesSpamClassifier:
                 else:
                     spam *= (self.likelihood['spam']['UNKOWN_WORD'] * self.prior['spam'] / self.marginal['UNKOWN_WORD'])
 
-            print(' '.join(sentence) + ' is ')
             if ham >= spam:
-                print('ham')
                 y_pred.append('ham')
             else:
-                print('spam')
                 y_pred.append('spam')
         
         return y_pred
