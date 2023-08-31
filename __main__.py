@@ -22,3 +22,4 @@ if __name__ == '__main__':
     # Attach prediction to test data
     test_df['label'] = y_pred
     test_df.to_csv('dataset/PerezResultData.csv', index=False)
+    print('Prediction saved to PerezResultData.csv')
