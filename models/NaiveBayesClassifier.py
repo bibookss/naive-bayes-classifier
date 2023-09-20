@@ -38,9 +38,9 @@ class NaiveBayesSpamClassifier:
         X = X.str.lower()
         X = X.str.replace(r'[^a-zA-Z\s]', '', regex=True)
         X = X.apply(word_tokenize)
-        X = X.apply(pos_tag)
-        X = X.apply(lambda x: [(word, tag) for word, tag in x if word not in self.stopwords])
-        X = X.apply(lambda x: [self.lemmatizer.lemmatize(word, pos=self.penn_to_wordnet_pos(tag)) for word, tag in x])
+        # X = X.apply(pos_tag)
+        # X = X.apply(lambda x: [(word, tag) for word, tag in x if word not in self.stopwords])
+        # X = X.apply(lambda x: [self.lemmatizer.lemmatize(word, pos=self.penn_to_wordnet_pos(tag)) for word, tag in x])
         return X
 
     def fit(self, X, y):
@@ -122,6 +122,3 @@ class NaiveBayesSpamClassifier:
                 y_pred.append('spam')
         
         return y_pred
-
-    def score(self, X, y):
-        pass
